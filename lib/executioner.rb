@@ -2,7 +2,7 @@ class Executioner
   
   def initialize(worker, request_repreive_method, options)
     @using_windows = !!((RUBY_PLATFORM =~ /(win|w)(32|64)$/) || (RUBY_PLATFORM=~ /mswin|mingw/))
-    require 'win32-process' if @using_windows
+    require 'win32/process' if @using_windows
     
     @worker = worker
     @request_repreive_method = request_repreive_method
