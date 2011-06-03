@@ -2,7 +2,7 @@ class Executioner
   
   def initialize(worker, request_repreive_method, options)
     @using_windows = !!((RUBY_PLATFORM =~ /(win|w)(32|64)$/) || (RUBY_PLATFORM=~ /mswin|mingw/))
-    @process_class = (@using_windows ? Windows::Process : Process)
+    require 'win32-process' if @using_windows
     
     @worker = worker
     @request_repreive_method = request_repreive_method
@@ -10,11 +10,13 @@ class Executioner
     
     Thread.new { reap_condemned }
     
-    @pid = @process_class.fork 
+    puts "$PROGRAM_NAME = #{$PROGRAM_NAME}"
+    
+    @pid = Process.fork
     puts "#{Process.pid}: got #{@pid} from fork()"
     if @pid
       @waiter = Thread.new do 
-        @process_class.wait @pid
+        Process.wait @pid
         @is_dead = true
       end
     else
@@ -40,7 +42,7 @@ class Executioner
       sleep @interval
       if @worker.send(@request_repreive_method)
         puts "#{Process.pid}: Killing #{@pid}"
-        @process_class.kill 9, @pid
+        Process.kill 9, @pid
         Thread.join @waiter
       end
     end

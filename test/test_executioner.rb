@@ -3,9 +3,7 @@ require 'helper'
 class TestExecutioner < Test::Unit::TestCase
   context "Executioner with MyWorker" do
     setup do
-      puts "running setup"
       @executioner = Executioner.execute(MyWorker.new, :should_kill_me?)
-      puts "got #{@executioner.child_pid}"
     end
 
     should "execute the work and kill the worker" do
