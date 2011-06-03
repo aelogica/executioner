@@ -1,6 +1,22 @@
 = executioner
 
-Description goes here.
+Executioner is a gem for executing work in a subprocess and conditionally killing that subprocess
+
+  class MyWorker
+    def execute!
+      #do some long running work
+    end
+    
+    def should_kill_me?
+      true
+    end
+  end
+  
+  Executioner.new(MyWorker.new, :interval => 5)
+  Executioner.new("MyWorker.new", :execute!, :should_kill_me?)
+  
+Executioner will spawn a new subprocess and invoke your execute method.  After 5 seconds it will ask your class if it should be killed.  If :should_kill_me? returns true, Executioner will kill the subprocess.
+
 
 == Contributing to executioner
  
@@ -14,6 +30,5 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2011 Aelogica Pair Dev. See LICENSE.txt for
-further details.
+Copyright (c) 2011 Steven Talcott Smith See LICENSE.txt for further details.
 
